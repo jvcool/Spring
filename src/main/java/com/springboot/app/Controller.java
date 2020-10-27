@@ -29,7 +29,7 @@ public class Controller {
 
     @RequestMapping("/")
     public String index(){
-        return "Hello World";
+        return "To export pdf @url/export/pdf";
     }
 
     @Autowired
