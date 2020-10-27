@@ -18,11 +18,14 @@ public class PDFExporter {
 
     private void writeTableHeader(PdfPTable table) {
         PdfPCell cell = new PdfPCell();
-        cell.setBackgroundColor(Color.BLUE);
+
+        cell.setBackgroundColor(Color.cyan);
         cell.setPadding(5);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
 
         Font font = FontFactory.getFont(FontFactory.HELVETICA);
-        font.setColor(Color.WHITE);
+        font.setColor(Color.blue);
 
         cell.setPhrase(new Phrase("User ID", font));
         table.addCell(cell);
@@ -30,10 +33,10 @@ public class PDFExporter {
         cell.setPhrase(new Phrase("Login ID", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Html Url", font));
+        cell.setPhrase(new Phrase("HTML URL", font));
         table.addCell(cell);
 
-        cell.setPhrase(new Phrase("Url", font));
+        cell.setPhrase(new Phrase("URL", font));
         table.addCell(cell);
 
         cell.setPhrase(new Phrase("Type", font));
@@ -44,13 +47,30 @@ public class PDFExporter {
     }
 
     private void writeTableData(PdfPTable table) {
+        Font font = FontFactory.getFont(FontFactory.HELVETICA);
+
+        PdfPCell cell = new PdfPCell();
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+
         for (User user : listUsers) {
-            table.addCell(user.getId());
-            table.addCell(user.getLogin());
-            table.addCell(user.getHtml_url());
-            table.addCell(user.getUrl());
-            table.addCell(user.getType());
-            table.addCell(user.getSite_admin());
+            cell.setPhrase(new Phrase(user.getId(), font));
+            table.addCell(cell);
+
+            cell.setPhrase(new Phrase(user.getLogin(), font));
+            table.addCell(cell);
+
+            cell.setPhrase(new Phrase(user.getHtml_url(), font));
+            table.addCell(cell);
+
+            cell.setPhrase(new Phrase(user.getUrl(), font));
+            table.addCell(cell);
+
+            cell.setPhrase(new Phrase(user.getType(), font));
+            table.addCell(cell);
+
+            cell.setPhrase(new Phrase(user.getSite_admin(), font));
+            table.addCell(cell);
         }
     }
 
@@ -59,26 +79,25 @@ public class PDFExporter {
         PdfWriter.getInstance(document, response.getOutputStream());
 
         document.open();
+
         Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         font.setSize(14);
-        font.setColor(Color.BLUE);
+        font.setColor(Color.blue);
 
-        Paragraph p = new Paragraph("List of Users", font);
+        Paragraph p = new Paragraph("List of Github Users", font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);
 
         PdfPTable table = new PdfPTable(6);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f, 3.5f, 3.0f, 3.0f, 3.0f, 1.5f});
+        table.setWidths(new float[] {1.5f, 3.0f, 3.0f, 3.0f, 1.5f, 1.5f});
         table.setSpacingBefore(10);
 
         writeTableHeader(table);
         writeTableData(table);
 
         document.add(table);
-
         document.close();
-
     }
 }

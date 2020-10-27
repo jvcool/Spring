@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import javax.servlet.http.HttpServletResponse;
@@ -40,32 +41,21 @@ public class Controller {
     }
 
     @RequestMapping(value = "/export/pdf")
-    public User[] getProductList(HttpServletResponse response) throws DocumentException,  IOException {
+    @ResponseBody
+    public void getUserList(HttpServletResponse response) throws DocumentException,  IOException {
         ResponseEntity<User[]> user_list = restTemplate.getForEntity("https://api.github.com/users", User[].class);
 
-        User[] users_info = user_list.getBody();;
+        User[] usersInfo = user_list.getBody();;
 
-//        ArrayList<User> users_info =  new ArrayList<User>();
-
-//        for(int i = 0; i < users.length; i++){
-//            System.out.println(users[i]);
-//            ResponseEntity<User> user_info = restTemplate.getForEntity("https://api.github.com/users/"
-//                                            + users[i].getLogin(), User.class);
-//
-//            users_info.add(user_info.getBody());
-//        }
-//
-//        response.setContentType("application/pdf");
+        response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+        String headerValue = "inline; filename=users_" + currentDateTime + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        PDFExporter exporter = new PDFExporter(Arrays.asList(users_info));
+        PDFExporter exporter = new PDFExporter(Arrays.asList(usersInfo));
         exporter.export(response);
-
-        return users_info;
     }
 }
